@@ -1,0 +1,63 @@
+<mat-card class="tarjeta-form" appearance="outlined">
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+  <mat-card-header>
+    <mat-card-title>Iniciar sesión</mat-card-title>
+    <mat-card-subtitle>Ingresá con tu DNI y contraseña</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (error(); as mensaje) {
+      <div class="alerta-error" role="alert">
+        <mat-icon>error</mat-icon>
+        <span>{{ mensaje }}</span>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="ingresar()" class="form" novalidate>
+      <mat-form-field>
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" inputmode="numeric" autocomplete="username" maxlength="8" />
+        <mat-icon matSuffix>badge</mat-icon>
+        @if (form.controls.dni.hasError('required')) {
+          <mat-error>El DNI es obligatorio.</mat-error>
+        } @else if (form.controls.dni.hasError('pattern')) {
+          <mat-error>El DNI debe tener 7 u 8 números, sin puntos.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultarPassword.set(!ocultarPassword())"
+          [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <mat-icon>{{ ocultarPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" [disabled]="cargando()">
+        <mat-icon>login</mat-icon>
+        Ingresar
+      </button>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <span class="texto-secundario">¿No tenés cuenta?</span>
+    <a mat-button routerLink="/registro">Registrate</a>
+  </mat-card-actions>
+</mat-card>

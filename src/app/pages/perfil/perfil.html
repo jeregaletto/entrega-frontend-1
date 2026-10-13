@@ -1,0 +1,65 @@
+@if (cargando()) {
+  <div class="centrado">
+    <mat-spinner diameter="48" />
+  </div>
+} @else if (error(); as mensaje) {
+  <div class="alerta-error tarjeta-form" role="alert">
+    <mat-icon>error</mat-icon>
+    <span>{{ mensaje }}</span>
+    <button mat-button (click)="cargar()">Reintentar</button>
+  </div>
+} @else if (perfil(); as p) {
+  <mat-card class="tarjeta-form ancha" appearance="outlined">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar">{{ iniciales() }}</div>
+      <mat-card-title>{{ p.nombre }} {{ p.apellido }}</mat-card-title>
+      <mat-card-subtitle>Mi perfil</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-chip-set aria-label="Tipo de usuario">
+        <mat-chip highlighted>
+          <mat-icon matChipAvatar>verified_user</mat-icon>
+          {{ rolLabel() }}
+        </mat-chip>
+      </mat-chip-set>
+
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>badge</mat-icon>
+          <span matListItemTitle>DNI</span>
+          <span matListItemLine>{{ p.dni }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>mail</mat-icon>
+          <span matListItemTitle>Email</span>
+          <span matListItemLine>{{ p.email }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>cake</mat-icon>
+          <span matListItemTitle>Fecha de nacimiento</span>
+          <span matListItemLine>{{ p.fecha_nacimiento ? (p.fecha_nacimiento | date: 'dd/MM/yyyy') : 'No informada' }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>call</mat-icon>
+          <span matListItemTitle>Teléfono</span>
+          <span matListItemLine>{{ p.telefono || 'No informado' }}</span>
+        </mat-list-item>
+        @if (p.rol === 'paciente') {
+          <mat-list-item>
+            <mat-icon matListItemIcon>health_and_safety</mat-icon>
+            <span matListItemTitle>Cobertura</span>
+            <span matListItemLine>{{ p.cobertura_nombre || 'Sin cobertura' }}</span>
+          </mat-list-item>
+        }
+        @if (p.id_sede) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>apartment</mat-icon>
+            <span matListItemTitle>Sede</span>
+            <span matListItemLine>Sede N° {{ p.id_sede }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+}
