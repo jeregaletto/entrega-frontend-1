@@ -11,7 +11,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { FechaAdapter } from './core/utils/fecha-adapter';
 import { TituloStrategy } from './core/utils/titulo-strategy';
-
+ 
 registerLocaleData(localeEsAr);
 
 export const appConfig: ApplicationConfig = {
