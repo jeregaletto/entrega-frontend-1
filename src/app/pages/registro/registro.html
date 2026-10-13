@@ -1,0 +1,164 @@
+<mat-card class="tarjeta-form ancha" appearance="outlined">
+  @if (enviando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+  <mat-card-header>
+    <mat-card-title>Registro de paciente</mat-card-title>
+    <mat-card-subtitle>Completá tus datos para crear tu cuenta</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (error(); as mensaje) {
+      <div class="alerta-error" role="alert">
+        <mat-icon>error</mat-icon>
+        <span>{{ mensaje }}</span>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="registrar()" class="form grilla" novalidate>
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" autocomplete="given-name" />
+        @if (form.controls.nombre.hasError('required')) {
+          <mat-error>El nombre es obligatorio.</mat-error>
+        } @else if (form.controls.nombre.hasError('pattern')) {
+          <mat-error>El nombre solo puede contener letras.</mat-error>
+        } @else if (form.controls.nombre.hasError('maxlength')) {
+          <mat-error>Máximo 50 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="apellido" autocomplete="family-name" />
+        @if (form.controls.apellido.hasError('required')) {
+          <mat-error>El apellido es obligatorio.</mat-error>
+        } @else if (form.controls.apellido.hasError('pattern')) {
+          <mat-error>El apellido solo puede contener letras.</mat-error>
+        } @else if (form.controls.apellido.hasError('maxlength')) {
+          <mat-error>Máximo 50 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" inputmode="numeric" maxlength="8" />
+        <mat-hint>Sin puntos ni espacios</mat-hint>
+        @if (form.controls.dni.hasError('required')) {
+          <mat-error>El DNI es obligatorio.</mat-error>
+        } @else if (form.controls.dni.hasError('pattern')) {
+          <mat-error>El DNI debe tener 7 u 8 números.</mat-error>
+        } @else if (form.controls.dni.hasError('duplicado')) {
+          <mat-error>Este DNI ya se encuentra registrado.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" [max]="hoy" placeholder="dd/mm/aaaa" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker" />
+        <mat-datepicker #picker startView="multi-year" />
+        @if (form.controls.fechaNacimiento.hasError('matDatepickerParse')) {
+          <mat-error>Fecha inválida. Usá el formato dd/mm/aaaa.</mat-error>
+        } @else if (form.controls.fechaNacimiento.hasError('required')) {
+          <mat-error>La fecha de nacimiento es obligatoria.</mat-error>
+        } @else if (form.controls.fechaNacimiento.hasError('futura') || form.controls.fechaNacimiento.hasError('matDatepickerMax')) {
+          <mat-error>La fecha no puede ser futura.</mat-error>
+        } @else if (form.controls.fechaNacimiento.hasError('muyAntigua')) {
+          <mat-error>Ingresá una fecha de nacimiento válida.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" autocomplete="email" />
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>El email es obligatorio.</mat-error>
+        } @else if (form.controls.email.hasError('email')) {
+          <mat-error>Ingresá un email válido (ej: nombre&#64;mail.com).</mat-error>
+        } @else if (form.controls.email.hasError('duplicado')) {
+          <mat-error>Este email ya se encuentra registrado.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Teléfono (opcional)</mat-label>
+        <input matInput formControlName="telefono" type="tel" autocomplete="tel" />
+        @if (form.controls.telefono.hasError('pattern')) {
+          <mat-error>Ingresá un teléfono válido.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="completo">
+        <mat-label>Cobertura</mat-label>
+        <mat-select formControlName="idCobertura">
+          @for (c of coberturas(); track c.id) {
+            <mat-option [value]="c.id">{{ c.nombre }}</mat-option>
+          }
+        </mat-select>
+        @if (cargandoCoberturas()) {
+          <mat-hint>Cargando coberturas...</mat-hint>
+        }
+        @if (form.controls.idCobertura.hasError('required')) {
+          <mat-error>Seleccioná una cobertura.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (errorCoberturas(); as mensaje) {
+        <div class="alerta-error completo" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ mensaje }}</span>
+          <button mat-button type="button" (click)="cargarCoberturas()">Reintentar</button>
+        </div>
+      }
+
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultarPassword.set(!ocultarPassword())"
+          [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <mat-icon>{{ ocultarPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-hint>Mínimo 6 caracteres</mat-hint>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        } @else if (form.controls.password.hasError('minlength')) {
+          <mat-error>La contraseña debe tener al menos 6 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Repetir contraseña</mat-label>
+        <input
+          matInput
+          formControlName="confirmarPassword"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        @if (form.controls.confirmarPassword.hasError('required')) {
+          <mat-error>Repetí la contraseña.</mat-error>
+        } @else if (form.controls.confirmarPassword.hasError('noCoinciden')) {
+          <mat-error>Las contraseñas no coinciden.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="completo acciones">
+        <a mat-button routerLink="/login">Ya tengo cuenta</a>
+        <button mat-flat-button type="submit" [disabled]="enviando()">
+          <mat-icon>person_add</mat-icon>
+          Registrarme
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

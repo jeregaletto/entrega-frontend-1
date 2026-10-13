@@ -1,0 +1,50 @@
+@use '@angular/material' as mat;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 4px;
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-on-primary),
+    )
+  );
+  @include mat.icon-button-overrides((icon-color: var(--mat-sys-on-primary)));
+  @include mat.button-overrides((text-label-text-color: var(--mat-sys-on-primary)));
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  font: var(--mat-sys-title-large);
+}
+
+.espaciador {
+  flex: 1;
+}
+
+.bienvenida,
+.usuario-nombre {
+  font: var(--mat-sys-title-small);
+}
+
+.usuario-nombre {
+  margin-left: 8px;
+}
+
+@media (max-width: 600px) {
+  .marca-texto,
+  .ocultar-movil,
+  .usuario-nombre {
+    display: none;
+  }
+
+  .bienvenida {
+    font: var(--mat-sys-body-medium);
+  }
+}

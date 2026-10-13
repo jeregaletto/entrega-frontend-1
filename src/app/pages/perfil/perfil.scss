@@ -1,0 +1,19 @@
+.centrado {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font: var(--mat-sys-title-medium);
+}
+
+mat-chip-set {
+  display: block;
+  margin: 8px 0;
+}

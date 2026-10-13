@@ -1,0 +1,21 @@
+.grilla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+}
+
+.completo {
+  grid-column: 1 / -1;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .grilla {
+    grid-template-columns: 1fr;
+  }
+}

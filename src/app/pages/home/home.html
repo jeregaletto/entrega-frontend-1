@@ -1,0 +1,48 @@
+@if (usuario(); as u) {
+  <section class="hero">
+    <mat-icon class="hero-icono">waving_hand</mat-icon>
+    <h1>¡Hola, {{ u.nombre }}!</h1>
+    <p>Elegí una función del menú para comenzar.</p>
+  </section>
+
+  <div class="grilla">
+    @for (item of accesos(); track item.path) {
+      <a mat-stroked-button class="acceso" [routerLink]="['/', rol(), item.path]">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        {{ item.label }}
+      </a>
+    }
+    <a mat-stroked-button class="acceso" routerLink="/perfil">
+      <mat-icon>person</mat-icon>
+      Mi perfil
+    </a>
+  </div>
+} @else {
+  <section class="hero">
+    <mat-icon class="hero-icono">local_hospital</mat-icon>
+    <h1>Tu salud, a un clic</h1>
+    <p>
+      Iniciá sesión o registrate como paciente para gestionar tus turnos y tu información médica
+      desde cualquier lugar.
+    </p>
+    <div class="acciones">
+      <a mat-flat-button routerLink="/login"><mat-icon>login</mat-icon>Iniciar sesión</a>
+      <a mat-stroked-button routerLink="/registro"><mat-icon>person_add</mat-icon>Registrarme</a>
+    </div>
+  </section>
+
+  <h2 class="subtitulo">¿Qué podés hacer como paciente registrado?</h2>
+  <div class="grilla">
+    @for (f of funcionalidades; track f.titulo) {
+      <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="avatar">{{ f.icono }}</mat-icon>
+          <mat-card-title>{{ f.titulo }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ f.texto }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
